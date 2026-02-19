@@ -1,0 +1,122 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  resumes   Resume[]
+
+  @@map("users")
+}
+
+model Resume {
+  id               String   @id @default(uuid())
+  userId           String?
+  user             User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fileName         String
+  fileSize         Int
+  jobRole          String
+  jobDescription   String?  @db.Text
+  jobUrl           String?
+  overallScore     Int      @default(0)
+  atsScore         Int      @default(0)
+  contentScore     Int      @default(0)
+  keywordScore     Int      @default(0)
+  formatScore      Int      @default(0)
+  impactScore      Int      @default(0)
+  readabilityScore Int      @default(0)
+  skillsScore      Int      @default(0)
+  experienceScore  Int      @default(0)
+  rawText          String?  @db.Text
+  summary          String?  @db.Text
+  enhancedBullets  String?  @db.Text
+  aiModel          String   @default("groq-llama-3.3-70b")
+  status           Status   @default(PENDING)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  skills      ResumeSkill[]
+  keywords    ResumeKeyword[]
+  suggestions Suggestion[]
+  learningResources LearningResource[]
+
+  @@map("resumes")
+}
+
+model ResumeSkill {
+  id       String    @id @default(uuid())
+  resumeId String
+  name     String
+  type     SkillType
+  resume   Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("resume_skills")
+}
+
+model ResumeKeyword {
+  id       String      @id @default(uuid())
+  resumeId String
+  word     String
+  type     KeywordType
+  resume   Resume      @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("resume_keywords")
+}
+
+model Suggestion {
+  id       String         @id @default(uuid())
+  resumeId String
+  type     SuggestionType
+  text     String         @db.Text
+  priority Int            @default(0)
+  resume   Resume         @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("suggestions")
+}
+
+model LearningResource {
+  id        String @id @default(uuid())
+  resumeId  String
+  skill     String
+  platform  String
+  title     String
+  url       String
+  isFree    Boolean @default(true)
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("learning_resources")
+}
+
+enum Status {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum SkillType {
+  FOUND
+  MISSING
+}
+
+enum KeywordType {
+  MATCHED
+  MISSING
+}
+
+enum SuggestionType {
+  CRITICAL
+  WARNING
+  INFO
+}

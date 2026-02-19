@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #0a0b14;
+    color: #e2e8f0;
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0f1120;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3538cd;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6172f3;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-dark-700/80 backdrop-blur-xl border border-white/10 rounded-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 via-accent-cyan to-accent-purple bg-clip-text text-transparent;
+  }
+
+  .glow-button {
+    @apply relative overflow-hidden bg-primary-600 hover:bg-primary-500 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 shadow-glow hover:shadow-glow hover:scale-105;
+  }
+
+  .input-field {
+    @apply bg-dark-600 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/50 transition-all duration-200;
+  }
+
+  .score-ring {
+    filter: drop-shadow(0 0 12px rgba(97, 114, 243, 0.5));
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(97, 114, 243, 0.6);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out both;
+  }
+
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(97, 114, 243, 0.5);
+  }
+
+  .border-gradient {
+    border: 1px solid;
+    border-image: linear-gradient(135deg, #6172f3, #06b6d4) 1;
+  }
+}
+
+/* Animated background grid */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(97, 114, 243, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(97, 114, 243, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Score circle animation */
+@keyframes dash {
+  to { stroke-dashoffset: 0; }
+}
+
+.score-circle-animate {
+  animation: dash 1.5s ease-in-out forwards;
+}
+
+/* Typewriter effect */
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid #6172f3;
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #6172f3 }
+}
+
+/* Shimmer loading effect */
+.shimmer {
+  background: linear-gradient(90deg, #1a1d35 25%, #252850 50%, #1a1d35 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Neon border effect */
+.neon-border {
+  box-shadow: 0 0 5px #6172f3, 0 0 10px #6172f3, 0 0 20px rgba(97, 114, 243, 0.3);
+}
+
+/* Progress bar animation */
+.progress-bar-animate {
+  animation: progressFill 1.5s ease-out forwards;
+}
+
+@keyframes progressFill {
+  from { width: 0%; }
+}

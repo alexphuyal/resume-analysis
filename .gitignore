@@ -1,0 +1,11 @@
+node_modules/
+.env
+dist/
+.turbo/
+.claude/
+apps/api/uploads/
+apps/api/temp/
+apps/ai-service/__pycache__/
+apps/ai-service/*.pyc
+apps/ai-service/models/
+*.log
