@@ -1,0 +1,13 @@
+Functional Requirements 
+
+User Registration 
+User login and adding the cv for the document. 
+Apply for the job directly 
+See its ats score looking at job. 
+Update the cv, get the preview of the document,  
+Download the updated cv, 
+redirect it to the employeer_job_portal_url.
+
+
+
+
