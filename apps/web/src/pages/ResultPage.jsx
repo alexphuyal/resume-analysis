@@ -80,6 +80,8 @@ export default function ResultPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState('overview')
+  const [improveOpen, setImproveOpen] = useState(false)
+  const [improveLoading, setImproveLoading] = useState(false)
 
   useEffect(() => {
     api.get('/resumes/' + id)
@@ -209,6 +211,115 @@ export default function ResultPage() {
             <h3 className="text-white font-semibold">Gemini AI Summary</h3>
           </div>
           <p className="text-gray-300 leading-relaxed">{result.summary}</p>
+        </motion.div>
+
+        {/* ── Improve This Resume CTA ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="glass-card p-5 mb-6 border border-accent-purple/20 hover:border-accent-purple/40 transition-all"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-purple to-primary-600 flex items-center justify-center shadow-glow-purple flex-shrink-0">
+                <Wand2 size={16} className="text-white" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold text-sm">✨ Improve This Resume</h3>
+                <p className="text-gray-500 text-xs mt-0.5">See the top {Math.min(3, (result.suggestions || []).filter(s => s.type === 'critical' || s.type === 'warning').length) || 3} actions that will boost your score the most</p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                if (!improveOpen) {
+                  setImproveLoading(true)
+                  setTimeout(() => setImproveLoading(false), 800)
+                }
+                setImproveOpen(p => !p)
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                improveOpen
+                  ? 'bg-accent-purple/20 border border-accent-purple/40 text-accent-purple'
+                  : 'bg-gradient-to-r from-accent-purple to-primary-600 text-white hover:opacity-90 shadow-glow-purple'
+              }`}
+            >
+              {improveLoading ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Wand2 size={14} />
+              )}
+              {improveOpen ? 'Hide' : 'Show Improvements'}
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {improveOpen && !improveLoading && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-5 pt-5 border-t border-white/5 space-y-3">
+                  {/* Critical suggestions first, then warnings */}
+                  {[
+                    ...(result.suggestions || []).filter(s => s.type === 'critical'),
+                    ...(result.suggestions || []).filter(s => s.type === 'warning'),
+                    ...(result.suggestions || []).filter(s => s.type === 'info'),
+                  ].slice(0, 5).map((s, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                      className={`flex items-start gap-3 p-3.5 rounded-xl border ${
+                        s.type === 'critical' ? 'bg-red-500/5 border-red-500/20' :
+                        s.type === 'warning' ? 'bg-accent-orange/5 border-accent-orange/20' :
+                        'bg-primary-600/5 border-primary-500/20'
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                        s.type === 'critical' ? 'bg-red-500/20' :
+                        s.type === 'warning' ? 'bg-accent-orange/20' :
+                        'bg-primary-600/20'
+                      }`}>
+                        <span className="text-[10px] font-black">{i + 1}</span>
+                      </div>
+                      <div className="flex-1">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                          s.type === 'critical' ? 'text-red-400' :
+                          s.type === 'warning'  ? 'text-accent-orange' : 'text-primary-400'
+                        }`}>{s.type === 'critical' ? '🔴 Critical Fix' : s.type === 'warning' ? '🟡 Improvement' : '💡 Tip'} </span>
+                        <p className="text-gray-200 text-sm mt-0.5 leading-relaxed">{s.text}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                  {(result.suggestions || []).length === 0 && (
+                    <div className="text-center py-4 text-gray-500">
+                      <CheckCircle size={24} className="text-accent-green mx-auto mb-2" />
+                      <p className="text-sm">Your resume looks great! No critical improvements needed.</p>
+                    </div>
+                  )}
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={() => { setActiveTab('suggestions'); setImproveOpen(false) }}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 text-gray-300 hover:text-white hover:border-white/20 transition-all text-sm"
+                    >
+                      View All Suggestions
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('enhance')}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-accent-purple/15 border border-accent-purple/30 text-accent-purple hover:bg-accent-purple/25 transition-all text-sm font-medium"
+                    >
+                      <Wand2 size={13} /> See AI-Enhanced Bullets
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* Tabs */}

@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/layout/Navbar'
+import ProtectedRoute from './components/ProtectedRoute'
 import LandingPage from './pages/LandingPage'
 import AnalyzePage from './pages/AnalyzePage'
 import ResultPage from './pages/ResultPage'
@@ -9,6 +10,7 @@ import DashboardPage from './pages/DashboardPage'
 import HistoryPage from './pages/HistoryPage'
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
+import JobsPage from './pages/JobsPage'
 
 export default function App() {
   return (
@@ -20,13 +22,17 @@ export default function App() {
         <Navbar />
         <main className="relative z-10">
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
-            <Route path="/analyze" element={<AnalyzePage />} />
-            <Route path="/result/:id" element={<ResultPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/history" element={<HistoryPage />} />
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+
+            {/* Protected routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/analyze" element={<ProtectedRoute><AnalyzePage /></ProtectedRoute>} />
+            <Route path="/result/:id" element={<ProtectedRoute><ResultPage /></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+            <Route path="/jobs" element={<ProtectedRoute><JobsPage /></ProtectedRoute>} />
           </Routes>
         </main>
         <Toaster
