@@ -12,6 +12,7 @@ import { authMiddleware } from "../auth/auth.middleware";
 const router = Router();
 
 router.use(authMiddleware);
+// note the data will be provided from the ai-service . 
 router.post(
   "/analyze",
   resumeUpload.single("resume"),

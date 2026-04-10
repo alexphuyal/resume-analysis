@@ -7,7 +7,6 @@ export const analyzeResumeSchema = Joi.object({
   groqKey: Joi.string().trim().allow('').optional(),
   hfKey: Joi.string().trim().allow('').optional(),
   aiProvider: Joi.string().valid('gemini', 'groq', 'huggingface').default('gemini'),
-  userId: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }).optional(),
   jobUrl: Joi.string().uri({ scheme: ['http', 'https'] }).allow('').optional(),
 });
 
@@ -16,5 +15,9 @@ export const resumeIdParamSchema = Joi.object({
 });
 
 export const resumeListQuerySchema = Joi.object({
-  userId: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }).optional(),
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(100).default(20),
+  status: Joi.string()
+    .valid("PENDING", "PROCESSING", "COMPLETED", "FAILED")
+    .optional(),
 });
